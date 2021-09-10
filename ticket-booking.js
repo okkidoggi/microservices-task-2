@@ -7,25 +7,19 @@ module.exports = ({repo}, app) => {
     // we grab the dependencies need it for this route
     const validate = req.container.resolve('validate')
     const paymentService = req.container.resolve('paymentService')
-    const notificationService = req.container.resolve('notificationService')
+    const currencyService = req.container.resolve('currencyService')
 
     Promise.all([
-      validate(req.body.user, 'user'),
       validate(req.body.booking, 'booking')
     ])
-    .then(([user, booking]) => {
+    .then(([booking]) => {
       const payment = {
-        userName: user.name + ' ' + user.lastName,
-        currency: 'mxn',
-        number: user.creditCard.number,
-        cvc: user.creditCard.cvc,
-        exp_month: user.creditCard.exp_month,
-        exp_year: user.creditCard.exp_year,
+        userName: user.name
+        currency: 'sgd',
         amount: booking.amount,
         description: `
           Tickect(s) for movie ${booking.movie},
-          with seat(s) ${booking.seats.toString()}
-          at time ${booking.schedule}`
+          at Cinema Room ${booking.cinemaRoom}
       }
 
       return Promise.all([
