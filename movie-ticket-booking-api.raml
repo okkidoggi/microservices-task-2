@@ -1,38 +1,18 @@
 #%RAML 1.0
-title: Booking Service
+title: Movie Ticket Booking Service
 version: v1
 baseUri: /
 
 types:
   Booking:
     properties:
-      city: string
-      cinema: string
-      movie: string
-      schedule: datetime
-      cinemaRoom: string
-      seats: array
-      totalAmount: number
-
-
-  User:
-    properties:
-      name: string
-      lastname: string
-      email: string
-      creditcard: object
-      phoneNumber?: string
-      membership?: number
-
-  Ticket:
-    properties:
-      cinema: string
-      schedule: string
-      movie: string
-      seat: string
-      cinemaRoom: string
-      orderId: string
-
+      Date: datetime
+      Time: datetime
+      Venue: string
+      Movie: string
+      CinemaRoom: string
+      Number of Tickets: number
+      Amount: number
 
 resourceTypes:
   GET:
@@ -48,22 +28,16 @@ resourceTypes:
       body:
         application/json:
           type: <<item>>
-          type: <<item2>>
+        
       responses:
         201:
           body:
             application/json:
-              type: <<item3>>
+              type: <<item>>
 
 
 /booking:
-  type:   { POST: {item : Booking, item2 : User, item3: Ticket} }
-  description: The booking service need a Booking object that contains all
-    the needed information to make a purchase of cinema tickets.
-    Needs a user information to make the booking succesfully.
-    And returns a ticket object.
+  type:   { POST: {item : Booking} }
 
   /verify/{orderId}:
     type:  { GET: {item : Ticket} }
-    description: This route is for verify orders, and would return all the details
-      of a specific purchased by orderid.
