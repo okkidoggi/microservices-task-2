@@ -14,7 +14,6 @@ module.exports = ({repo}, app) => {
     ])
     .then(([booking]) => {
       const payment = {
-        userName: user.name
         currency: 'sgd',
         amount: booking.amount,
         description: `
@@ -23,21 +22,18 @@ module.exports = ({repo}, app) => {
       }
 
       return Promise.all([
-        // we call the payment service
         paymentService(payment),
-        Promise.resolve(user),
         Promise.resolve(booking)
       ])
     })
-    .then(([paid, user, booking]) => {
+    .then(([paid, booking]) => {
       return Promise.all([
-        repo.makeBooking(user, booking),
+        repo.makeBooking(booking),
         repo.generateTicket(paid, booking)
       ])
     })
     .then(([booking, ticket]) => {
-      // we call the notification service
-      notificationService({booking, ticket})
+      currencyService({booking})
       res.status(status.OK).json(ticket)
     })
     .catch(next)
